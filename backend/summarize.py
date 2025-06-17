@@ -6,7 +6,7 @@ from typing import List
 from youtube import Comment
 import os
 
-async def openai_summarize(comments: List[Comment]) -> str:
+def openai_summarize(comments: List[Comment]) -> str:
     if not os.getenv('OPENAI_API_KEY'):
         raise Exception("OPENAI_API_KEY is not set")
 
@@ -20,4 +20,4 @@ async def openai_summarize(comments: List[Comment]) -> str:
     llm = ChatOpenAI(model='gpt-4', temperature=0.5)
     chain = create_stuff_documents_chain(llm, prompt)
 
-    return await chain.invoke({'context': docs})
+    return chain.invoke({'context': docs})

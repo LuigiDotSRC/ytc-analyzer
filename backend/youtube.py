@@ -40,7 +40,7 @@ def get_comments(video_id: str, num_comments: int) -> List[Comment]:
         author = top_comment['authorDisplayName']
         text = top_comment['textDisplay']
         like_count = top_comment['likeCount']
-        published_at = top_comment['publishedAt']
+        published_at = datetime.fromisoformat(top_comment['publishedAt'].replace('Z', '+00:00'))
 
         comments.append(Comment(snippet_id, author, text, like_count, published_at, None))
 
