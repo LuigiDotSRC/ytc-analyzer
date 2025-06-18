@@ -3,12 +3,13 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { getVideoIdFromUrl } from "@/lib/youtube"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import axiosInstance from "@/lib/axios"
 
 function YoutubeInputBar() {
   const [url, setUrl] = useState("")
   const [error, setError] = useState("")
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const videoId = getVideoIdFromUrl(url)
     if (!videoId) {
@@ -16,8 +17,16 @@ function YoutubeInputBar() {
       return
     }
     setError("")
-    alert(`Submitted: ${url}`)
-    console.log(videoId)
+
+    const [summaryResponse, sentimentResponse] = await Promise.all([
+      axiosInstance.get(`/summary?videoId=${videoId}`),
+      axiosInstance.get(`/sentiment?videoId=${videoId}`)
+    ])
+    const summaryData = summaryResponse.data
+    const sentimentData = sentimentResponse.data
+
+    console.log(summaryData)
+    console.log(sentimentData)
   }
 
   return (
