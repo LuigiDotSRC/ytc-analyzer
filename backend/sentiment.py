@@ -43,15 +43,17 @@ async def analyze_sentiment(comments: List[Comment]) -> List[dict]:
         else:
             sentiment = 'NEU'
 
-        result.append({
+        comment_dict = {
             'id': comment.id,
             'author': comment.author,
             'text': comment.text,
             'like_count': comment.like_count,
-            'published_at': comment.published_at,
+            'published_at': comment.published_at.isoformat(),
             'parent_id': comment.parent_id,
             'sentiment': sentiment,
             'score': score
-        })
+        }
+
+        result.append(comment_dict)
 
     return result

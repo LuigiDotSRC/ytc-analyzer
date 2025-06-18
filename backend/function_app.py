@@ -11,8 +11,8 @@ app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
 max_comments = 100
 
-@app.route(route="comments/sentiment", methods=["GET"])
-def comment_sentiment(req: func.HttpRequest) -> func.HttpResponse:
+@app.route(route="sentiment")
+def sentiment(req: func.HttpRequest) -> func.HttpResponse:
     params = req.params
     num_comments = params.get('numComments')
     if not num_comments:
@@ -57,8 +57,8 @@ def comment_sentiment(req: func.HttpRequest) -> func.HttpResponse:
             status_code=500
         )
 
-@app.route(route="comments/summary", methods=["GET"])
-def comment_summary(req: func.HttpRequest) -> func.HttpResponse:
+@app.route(route="summary")
+def summary(req: func.HttpRequest) -> func.HttpResponse:
     params = req.params
     num_comments = params.get('numComments')
     if not num_comments:
