@@ -1,10 +1,10 @@
-import { Button } from '@/components/ui/button'
+import YoutubeInputBar from "@/components/YoutubeInputBar"
 
 function App() {
   return (
-    <div>
-      <h1 className='text-3xl font-bold underline text-amber-400'>Hello World</h1>
-      <Button>Click me</Button>
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="absolute top-6 left-8 text-4xl font-extrabold text-primary select-none z-50">ytc-analyzer</div>
+      <YoutubeInputBar />
     </div>
   )
 }
