@@ -1,13 +1,13 @@
-name: Build and deploy Python project to Azure Function App - ytc-analyzer-backend
+name: Build and deploy Python project to Azure Function App - ytc-analyzer-cicd
 
 on:
   push:
     branches:
-      - main
+      - cicd
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'backend'
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: './backend'
   PYTHON_VERSION: '3.11'
 
 jobs:
@@ -20,22 +20,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Setup Python version
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Create and activate virtual environment
+      - name: Install dependencies
         working-directory: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
         run: |
           python -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
 
-      - name: Zip artifact for deployment
-        working-directory: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+      - name: Zip backend folder for deployment
         run: |
-          zip -r ../release.zip . -x "venv/*"
+          cd backend
+          zip -r ../release.zip . -x "venv/*" "__pycache__/*"
 
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
@@ -56,19 +56,20 @@ jobs:
         with:
           name: python-app
 
-      - name: Unzip artifact
+      - name: Unzip artifact for deployment
         run: unzip release.zip -d deployment
 
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_5FD98C5774134FDC9BB55C7CB6F50D2D }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_C7E5F654E5934DEF8FD9E65FEF0043F5 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_1E7804D990AA4925BC3881AC62C7A517 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_F5427EE4C32B4BDA99BA9FE8140C834A }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_9940099365F5419A98EB229D2D702A61 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2D54FD7976114ED785C32E72B111F407 }}
 
       - name: Deploy to Azure Functions
         uses: Azure/functions-action@v1
+        id: deploy-to-function
         with:
-          app-name: 'ytc-analyzer-backend'
+          app-name: 'ytc-analyzer-cicd'
           slot-name: 'dev'
           package: deployment
